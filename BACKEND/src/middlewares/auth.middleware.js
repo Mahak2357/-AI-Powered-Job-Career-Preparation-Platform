@@ -1,25 +1,31 @@
-const jwt = require('jsonwebtoken'); // Import the jsonwebtoken library for handling JWTs
-const tokenBlacklistModel= require('../models/blacklist.model'); // Import the Blacklist model for token blacklisting
+const jwt = require('jsonwebtoken');
+const tokenBlacklistModel = require('../models/blacklist.model');
 
-function authenticateToken(req, res, next) {
-    const token = req.cookies.token; // Retrieve the token from the request cookies
-    if (!token) {
-        return res.status(401).json({ message: 'Access denied. No token provided.' });
-    }
-
-    const isBlacklisted = tokenBlacklistModel.findOne({ token }); // Check if the token is blacklisted
-    if (isBlacklisted) {
-        return res.status(401).json({ message: 'Access denied. Token is blacklisted.' });
-    }
-
+async function authenticateToken(req, res, next) {
     try {
+        // 1. Safely retrieve token from cookies or Authorization header
+        const token =
+            req.cookies?.token ||
+            req.headers?.authorization?.split(' ')[1] ||
+            req.headers?.token;
+
+        if (!token) {
+            return res.status(401).json({ message: 'Access denied. No token provided.' });
+        }
+
+        // 2. Await the database check for blacklisted token
+        const isBlacklisted = await tokenBlacklistModel.findOne({ token });
+        if (isBlacklisted) {
+            return res.status(401).json({ message: 'Access denied. Token is blacklisted.' });
+        }
+
+        // 3. Verify token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded; // Attach the decoded user information to the request object
-        next(); // Call the next middleware function
+        req.user = decoded;
+        next();
     } catch (error) {
-        return res.status(400).json({ message: 'Invalid token.' });
+        return res.status(400).json({ message: 'Invalid or expired token.' });
     }
 }
 
-module.exports = { authenticateToken // Export the authenticateToken middleware function for use in routes
-};
+module.exports = { authenticateToken };
