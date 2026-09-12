@@ -1,156 +1,32 @@
-import React, { useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../auth/hooks/useAuth';
-import Home from './Home';
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { ArrowRight, BrainCircuit, Code2, FileSearch, LayoutDashboard, MessageSquare, Moon, Network, ScanSearch, Sun, Target, UsersRound, WandSparkles } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../auth/hooks/useAuth";
 import "../style/landing.scss";
 
+const features = [
+  [FileSearch, "AI Resume Analysis", "Turn your experience into focused interview signals."], [Target, "Personalized Roadmaps", "A clear weekly path matched to your target."], [Code2, "DSA Preparation", "Practice the patterns that matter most."], [Network, "System Design", "Build confidence in trade-offs and architecture."], [MessageSquare, "Behavioral / STAR", "Make your impact stories memorable."], [BrainCircuit, "Company-specific Prep", "Adapt your practice to the company room."], [UsersRound, "Mock Interview Engine", "Rehearse deliberate, realistic conversations."], [ScanSearch, "ATS Insights", "Spot ways to make your profile stronger."]
+];
+const testimonials = [["Demo feedback", "Frontend Engineer", "The roadmap made it obvious what to study next."], ["Demo feedback", "CS Student", "It turned a vague plan into daily practice I could follow."], ["Demo feedback", "Software Engineer", "The interview focus felt remarkably specific to my role."]];
+
 export default function LandingPage() {
-  const { user, handleLogout } = useAuth();
   const navigate = useNavigate();
-  const workspaceRef = useRef(null);
-
-  const scrollToWorkspace = () => {
-    if (!user) {
-      navigate('/login');
-      return;
-    }
-    workspaceRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  return (
-    <div className="landing-wrapper">
-      {/* ── Glassmorphism Navbar ── */}
-      <header className="site-navbar glass-panel">
-        <div className="nav-brand">
-          <span className="brand-icon">✦</span>
-          <span className="brand-name">PrepAI<span className="brand-dot">.studio</span></span>
-        </div>
-
-        <nav className="nav-links">
-          <a href="#features">Features</a>
-          <a href="#how-it-works">How It Works</a>
-          <a href="#workspace" onClick={(e) => { e.preventDefault(); scrollToWorkspace(); }}>Workspace</a>
-        </nav>
-
-        <div className="nav-actions">
-          {user ? (
-            <div className="user-pill">
-              <span className="user-avatar">{user.username?.[0]?.toUpperCase() || 'U'}</span>
-              <span className="user-name">{user.username || 'Candidate'}</span>
-              <button className="logout-btn" onClick={handleLogout}>Exit</button>
-            </div>
-          ) : (
-            <>
-              <button className="nav-btn ghost" onClick={() => navigate('/login')}>Sign In</button>
-              <button className="nav-btn glow-cta" onClick={() => navigate('/register')}>Get Started Free</button>
-            </>
-          )}
-        </div>
-      </header>
-
-      {/* ── Hero Section ── */}
-      <section className="hero-section">
-        <div className="hero-badge">
-          <span className="pulse-dot"></span> Powered by Google Gemini 2.5
-        </div>
-        
-        <h1 className="hero-title">
-          Crack Your Dream Tech Role <br />
-          <span className="gradient-text">With AI-Crafted Precision</span>
-        </h1>
-
-        <p className="hero-subtitle">
-          Transform any Job Description into ATS score diagnostics, tailored scenario-based mock interviews, 
-          and actionable roadmap blueprints in seconds.
-        </p>
-
-        <div className="hero-cta-group">
-          <button className="cta-primary" onClick={scrollToWorkspace}>
-            <span>Launch Studio Workspace</span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </button>
-          <a href="#features" className="cta-secondary">Explore Engine Capabilities</a>
-        </div>
-
-        {/* Floating Stat Pills */}
-        <div className="stats-strip">
-          <div className="stat-card">
-            <h3>98.4%</h3>
-            <p>ATS Match Accuracy</p>
-          </div>
-          <div className="stat-card">
-            <h3>30 sec</h3>
-            <p>Average Plan Synthesis</p>
-          </div>
-          <div className="stat-card">
-            <h3>Top 1%</h3>
-            <p>Model Answers Generated</p>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Features Showcase ── */}
-      <section id="features" className="features-grid-section">
-        <div className="section-heading">
-          <span className="tag">Architected For Impact</span>
-          <h2>Everything You Need To Secure The Offer</h2>
-        </div>
-
-        <div className="features-container">
-          <div className="feature-box glass-panel">
-            <div className="feature-icon">🎯</div>
-            <h3>Skill Gap Radar</h3>
-            <p>Extracts latent requirements from descriptions and pinpoints your technical and soft-skill deficiencies.</p>
-          </div>
-          <div className="feature-box glass-panel">
-            <div className="feature-icon">🧠</div>
-            <h3>Scenario Mock Engine</h3>
-            <p>Produces interviewer intentions and high-impact STAR-method model responses for hard-hitting questions.</p>
-          </div>
-          <div className="feature-box glass-panel">
-            <div className="feature-icon">📄</div>
-            <h3>Tailored ATS PDF</h3>
-            <p>Generates an optimized resume formatted explicitly for applicant tracking filters via Puppeteer.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Actual Workspace / Home Module ── */}
-      <section id="workspace" ref={workspaceRef} className="workspace-embed-section">
-        <Home />
-      </section>
-
-      {/* ── High-End Footer ── */}
-      <footer className="site-footer">
-        <div className="footer-content">
-          <div className="footer-brand">
-            <div className="nav-brand">
-              <span className="brand-icon">✦</span>
-              <span className="brand-name">PrepAI<span className="brand-dot">.studio</span></span>
-            </div>
-            <p>Next-generation career strategy and technical interview acceleration platform.</p>
-          </div>
-
-          <div className="footer-links-group">
-            <div>
-              <h4>Platform</h4>
-              <a href="#workspace">Workspace</a>
-              <a href="#features">Features</a>
-            </div>
-            <div>
-              <h4>Stack</h4>
-              <span>React 18</span>
-              <span>Gemini AI</span>
-              <span>Express & JWT</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="footer-bottom">
-          <p>© 2026 PrepAI Studio. All rights reserved.</p>
-          <div className="footer-meta">Production Build Ready</div>
-        </div>
-      </footer>
-    </div>
-  );
+  const { user, handleLogout } = useAuth();
+  const [dark, setDark] = useState(true);
+  const go = () => navigate(user ? "/onboarding" : "/register");
+  return <div className={`new-landing ${dark ? "theme-dark" : "theme-light"}`}>
+    <div className="landing-noise" /><div className="landing-rays" />
+    <header className="marketing-nav"><button className="marketing-brand" onClick={() => navigate("/")}><WandSparkles size={18} /> PrepAI<span>.studio</span></button><nav><a href="#features">Features</a><a href="#how-it-works">How It Works</a><a href="#preview">Mock Engine</a><a href="#reviews">Reviews</a></nav><div className="marketing-actions"><button className="icon-action" aria-label="Toggle theme" onClick={() => setDark(!dark)}>{dark ? <Sun size={17} /> : <Moon size={17} />}</button>{user ? <><button className="profile-pill" onClick={() => navigate("/dashboard")}>{user.username?.slice(0, 1).toUpperCase()} <span>Workspace</span></button><button className="login-link" onClick={handleLogout}>Sign out</button></> : <button className="login-link" onClick={() => navigate("/login")}>Login</button>}<button className="nav-cta" onClick={go}>Get Started Free</button></div></header>
+    <main>
+      <section className="marketing-hero"><motion.div initial={{ opacity:0, y:14 }} animate={{ opacity:1, y:0 }} transition={{ duration:.55 }}><p className="gemini-badge">Powered by Google Gemini</p><h1>Prepare smarter.<br /><span>Crack your next interview.</span></h1><p>PrepAI analyzes your resume, target role and goals to create a personalized interview preparation plan.</p><div className="hero-buttons"><button className="nav-cta" onClick={go}>Get Started Free <WandSparkles size={15} /></button><a href="#how-it-works" className="watch-button">See How It Works <ArrowRight size={15} /></a></div></motion.div></section>
+      <section id="how-it-works" className="how-section"><SectionIntro label="HOW PREPAI WORKS" title="From ambition to a practical plan." /><div className="how-grid">{[["01", "CREATE YOUR ACCOUNT", "Sign up with email to start your personal workspace."], ["02", "TELL US ABOUT YOUR GOAL", "Choose your target role, company, and interview areas."], ["03", "GET YOUR AI PLAN", "Receive a personalized roadmap built around your profile."]].map(([number, title, text]) => <article key={number}><b>{number}</b><h3>{title}</h3><p>{text}</p></article>)}</div><button className="inline-cta" onClick={go}>Build My Preparation Plan <ArrowRight size={16} /></button></section>
+      <section id="preview" className="product-preview"><SectionIntro label="YOUR WORKSPACE" title="Everything your next interview needs, in one view." /><div className="workspace-preview"><aside><p>PREPAI</p><b><LayoutDashboard size={15} /> Overview</b><span>Roadmap</span><span>Resume insights</span><span>Mock engine</span></aside><div className="preview-main"><div className="preview-heading"><div><small>PREPARATION SCORE</small><strong>78%</strong></div><div className="mock-target">Software Engineer Intern <b>@ Google</b></div></div><div className="preview-cards"><article><small>SKILL GAPS</small><b>System design</b><p>Prioritize cache and queue trade-offs.</p></article><article><small>UP NEXT</small><b>Arrays + Strings</b><p>6 focused exercises remaining.</p></article></div><div className="mock-roadmap"><small>YOUR PREPARATION ROADMAP</small>{["DSA Foundations", "Arrays + Strings", "Trees + Graphs", "Mock Interviews"].map((item, i) => <div key={item}><span>WEEK {i + 1}</span><b>{item}</b>{i === 0 && <em>In progress</em>}</div>)}</div></div></div></section>
+      <section id="features" className="marketing-features"><SectionIntro label="INTELLIGENT PRACTICE" title="Built for the whole interview, not just one question." /><div className="feature-grid">{features.map(([Icon, title, body]) => <motion.article key={title} whileHover={{ y:-5 }}><Icon size={21} /><h3>{title}</h3><p>{body}</p></motion.article>)}</div></section>
+      <section id="reviews" className="reviews-section"><SectionIntro label="PRODUCT PREVIEW" title="Built for engineers preparing for their next opportunity." /><div className="testimonial-grid">{testimonials.map(([label, role, quote], i) => <motion.article key={role} whileHover={{ y:-4, rotate: i === 1 ? 0 : i ? 1 : -1 }}><div>***** <span>{label}</span></div><p>"{quote}"</p><footer><i>{role.slice(0, 1)}</i><b>{role}</b></footer></motion.article>)}</div></section>
+      <section className="final-cta"><p className="section-kicker">START WITH CLARITY</p><h2>Your next interview deserves a better plan.</h2><p>Turn your resume and career goals into a focused preparation roadmap.</p><button className="nav-cta" onClick={go}>Get Started Free <WandSparkles size={15} /></button></section>
+    </main><footer className="marketing-footer"><div><b>PrepAI.studio</b><p>Intelligent preparation for ambitious engineers.</p><span>GitHub LinkedIn X</span></div><div><b>Product</b><span>Workspace</span><span>Resume Scanner</span><span>Mock Engine</span><span>Roadmaps</span></div><div><b>Resources</b><span>Documentation</span><span>ATS Guide</span><span>Interview Guide</span><span className="status">All Systems Normal</span></div><div><b>Legal</b><span>Privacy</span><span>Terms</span><span>Contact</span><input aria-label="Email address" placeholder="Email for updates" /></div></footer>
+  </div>;
 }
+
+function SectionIntro({ label, title }) { return <div className="section-intro"><p className="section-kicker">{label}</p><h2>{title}</h2></div>; }

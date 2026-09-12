@@ -17,7 +17,7 @@ const Login = () => {
 
     try {
       await handleLogin({ email, password });
-      navigate('/');
+      navigate('/onboarding');
     } catch (err) {
       setError(err.message || 'Invalid credentials. Please try again.');
     }

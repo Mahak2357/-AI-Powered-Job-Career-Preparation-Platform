@@ -87,8 +87,6 @@ export const useInterview = () => {
   useEffect(() => {
     if (interviewId) {
       getReportById(interviewId);
-    } else {
-      getReports();
     }
   }, [interviewId]);
 

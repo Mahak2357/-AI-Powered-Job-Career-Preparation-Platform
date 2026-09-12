@@ -4,6 +4,8 @@ import Register from "./features/auth/pages/Register";
 import Protected from "./features/auth/components/Protected";
 import Interview from "./features/interview/pages/Interview";
 import LandingPage from "./features/interview/pages/LandingPage";       
+import Onboarding from "./features/interview/pages/Onboarding";
+import Dashboard from "./features/interview/pages/Dashboard";
 
 
 export const router = createBrowserRouter([
@@ -22,5 +24,13 @@ export const router = createBrowserRouter([
     {
         path:"/interview/:interviewId",
         element: <Protected><Interview /></Protected>
+    },
+    {
+        path: "/onboarding",
+        element: <Protected><Onboarding /></Protected>
+    },
+    {
+        path: "/dashboard",
+        element: <Protected><Dashboard /></Protected>
     }
 ])
