@@ -6,6 +6,7 @@ import Interview from "./features/interview/pages/Interview";
 import LandingPage from "./features/interview/pages/LandingPage";       
 import Onboarding from "./features/interview/pages/Onboarding";
 import Dashboard from "./features/interview/pages/Dashboard";
+import Roadmap from "./features/interview/pages/Roadmap";
 
 
 export const router = createBrowserRouter([
@@ -32,5 +33,9 @@ export const router = createBrowserRouter([
     {
         path: "/dashboard",
         element: <Protected><Dashboard /></Protected>
+    },
+    {
+        path: "/roadmap/:interviewId",
+        element: <Protected><Roadmap /></Protected>
     }
 ])

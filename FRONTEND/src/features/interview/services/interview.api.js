@@ -14,6 +14,18 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      window.location.assign("/login");
+    }
+    return Promise.reject(error);
+  }
+);
+
 /**
  * Service to generate interview report
  */
@@ -24,8 +36,13 @@ export const generateInterviewReport = async ({ jobDescription, selfDescription,
   if (selfDescription) formData.append("selfDescription", selfDescription);
   if (resumeFile) formData.append("resume", resumeFile);
 
-  const response = await api.post("/api/interview/", formData);
-  return response.data;
+  try {
+    const response = await api.post("/api/interview/", formData);
+    return response.data;
+  } catch (error) {
+    const message = error.response?.data?.message || "Could not generate your preparation plan. Please try again.";
+    throw new Error(message);
+  }
 };
 
 /**
@@ -33,6 +50,11 @@ export const generateInterviewReport = async ({ jobDescription, selfDescription,
  */
 export const getInterviewReportById = async (interviewId) => {
   const response = await api.get(`/api/interview/report/${interviewId}`);
+  return response.data;
+};
+
+export const updateRoadmapTask = async ({ interviewId, dayIndex, taskIndex, completed }) => {
+  const response = await api.patch(`/api/interview/report/${interviewId}/tasks/${dayIndex}/${taskIndex}`, { completed });
   return response.data;
 };
 

@@ -63,10 +63,16 @@ const RoadMapDay = ({ day }) => (
       {(day?.tasks || []).map((task, i) => (
         <li key={i}>
           <span className="roadmap-day__bullet" />
-          <span>{task}</span>
+          <span>{typeof task === "string" ? task : task.title}</span>
         </li>
       ))}
     </ul>
+    {(day?.notes?.length > 0 || day?.tips?.length > 0) && (
+      <div className="roadmap-day__guidance">
+        {day.notes?.length > 0 && <div><strong>Notes</strong><p>{day.notes.join(" ")}</p></div>}
+        {day.tips?.length > 0 && <div><strong>Interview tips</strong><p>{day.tips.join(" ")}</p></div>}
+      </div>
+    )}
   </div>
 );
 
@@ -203,7 +209,7 @@ const Interview = () => {
             <section className="fade-section">
               <div className="content-header">
                 <h2>Execution Roadmap</h2>
-                <span className="content-header__count">{preparationPlan.length}-Day Plan</span>
+                <button className="open-roadmap-link" onClick={() => navigate(`/roadmap/${interviewId}`)}>Open interactive roadmap</button>
               </div>
               <div className="roadmap-list">
                 {preparationPlan.length > 0 ? (

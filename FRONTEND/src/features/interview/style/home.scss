@@ -383,3 +383,5 @@
   from { opacity: 0; transform: translateY(-6px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+:root[data-theme="light"] .home-page { color: #17233d; }:root[data-theme="light"] .home-page .page-header p,:root[data-theme="light"] .home-page .panel__hint,:root[data-theme="light"] .home-page .char-counter { color: #52627d; }:root[data-theme="light"] .home-page textarea,:root[data-theme="light"] .home-page .dropzone { background: rgba(255, 255, 255, 0.82); color: #17233d; border-color: rgba(52, 72, 110, 0.2); }

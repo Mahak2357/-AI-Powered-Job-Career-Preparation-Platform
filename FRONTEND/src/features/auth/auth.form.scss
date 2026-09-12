@@ -167,3 +167,5 @@
   25% { transform: translateX(-5px); }
   75% { transform: translateX(5px); }
 }
+
+:root[data-theme="light"] .auth-page .form-container { box-shadow: 0 24px 60px rgba(38, 59, 105, 0.16); }:root[data-theme="light"] .auth-page .form-header h1 { color: #16213b; }:root[data-theme="light"] .auth-page .form-header .subtitle,:root[data-theme="light"] .auth-page .footer-text { color: #52627d; }:root[data-theme="light"] .auth-page .input-group label { color: #283a5b; }:root[data-theme="light"] .auth-page .input-group input { color: #17233d; background: rgba(255, 255, 255, 0.88); border-color: rgba(52, 72, 110, 0.22); }:root[data-theme="light"] .auth-page .input-group input:focus { background: #fff; }

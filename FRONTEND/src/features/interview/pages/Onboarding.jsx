@@ -1,8 +1,9 @@
 import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, Check, FileText, LoaderCircle, Upload, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, FileText, LoaderCircle, Moon, Sun, Upload, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useInterview } from "../hooks/useInterview";
+import { useTheme } from "../../../theme.context.jsx";
 import "../style/prepai.scss";
 
 const profiles = ["Student", "Recent Graduate", "Software Engineer", "Career Switcher"];
@@ -13,6 +14,7 @@ const stages = ["Analyzing your profile...", "Finding skill gaps...", "Building 
 export default function Onboarding() {
   const navigate = useNavigate();
   const { generateReport, loading } = useInterview();
+  const { theme, toggleTheme } = useTheme();
   const inputRef = useRef(null);
   const [step, setStep] = useState(0);
   const [profile, setProfile] = useState("Student");
@@ -52,7 +54,7 @@ export default function Onboarding() {
   return (
     <main className="prepai-app">
       <div className="app-noise" />
-      <header className="app-topbar"><button className="brand-button" onClick={() => navigate("/")}>✦ <span>PrepAI.studio</span></button><button className="text-button" onClick={() => navigate("/dashboard")}>Workspace</button></header>
+      <header className="app-topbar"><button className="brand-button" onClick={() => navigate("/")}>✦ <span>PrepAI.studio</span></button><div className="app-topbar-actions"><button className="app-theme-toggle" aria-label="Toggle theme" onClick={toggleTheme}>{theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}</button><button className="text-button" onClick={() => navigate("/dashboard")}>Workspace</button></div></header>
       <section className="onboarding-shell">
         <p className="eyebrow">PERSONALIZATION</p><h1>Welcome to PrepAI</h1><p className="lede">Let's personalize your preparation.</p>
         <ol className="progress-track">{stepLabels.map((label, index) => <li key={label} className={index <= step ? "active" : ""}><span>{index < step ? <Check size={14} /> : `0${index + 1}`}</span><b>{label}</b></li>)}</ol>

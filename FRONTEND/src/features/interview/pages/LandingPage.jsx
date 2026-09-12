@@ -1,8 +1,8 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, BrainCircuit, Code2, FileSearch, LayoutDashboard, MessageSquare, Moon, Network, ScanSearch, Sun, Target, UsersRound, WandSparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/hooks/useAuth";
+import { useTheme } from "../../../theme.context.jsx";
 import "../style/landing.scss";
 
 const features = [
@@ -13,11 +13,11 @@ const testimonials = [["Demo feedback", "Frontend Engineer", "The roadmap made i
 export default function LandingPage() {
   const navigate = useNavigate();
   const { user, handleLogout } = useAuth();
-  const [dark, setDark] = useState(true);
+  const { theme, toggleTheme } = useTheme();
   const go = () => navigate(user ? "/onboarding" : "/register");
-  return <div className={`new-landing ${dark ? "theme-dark" : "theme-light"}`}>
+  return <div className={`new-landing theme-${theme}`}>
     <div className="landing-noise" /><div className="landing-rays" />
-    <header className="marketing-nav"><button className="marketing-brand" onClick={() => navigate("/")}><WandSparkles size={18} /> PrepAI<span>.studio</span></button><nav><a href="#features">Features</a><a href="#how-it-works">How It Works</a><a href="#preview">Mock Engine</a><a href="#reviews">Reviews</a></nav><div className="marketing-actions"><button className="icon-action" aria-label="Toggle theme" onClick={() => setDark(!dark)}>{dark ? <Sun size={17} /> : <Moon size={17} />}</button>{user ? <><button className="profile-pill" onClick={() => navigate("/dashboard")}>{user.username?.slice(0, 1).toUpperCase()} <span>Workspace</span></button><button className="login-link" onClick={handleLogout}>Sign out</button></> : <button className="login-link" onClick={() => navigate("/login")}>Login</button>}<button className="nav-cta" onClick={go}>Get Started Free</button></div></header>
+    <header className="marketing-nav"><button className="marketing-brand" onClick={() => navigate("/")}><WandSparkles size={18} /> PrepAI<span>.studio</span></button><nav><a href="#features">Features</a><a href="#how-it-works">How It Works</a><a href="#preview">Mock Engine</a><a href="#reviews">Reviews</a></nav><div className="marketing-actions"><button className="icon-action" aria-label="Toggle theme" onClick={toggleTheme}>{theme === "dark" ? <Sun size={17} /> : <Moon size={17} />}</button>{user ? <><button className="profile-pill" onClick={() => navigate("/dashboard")}>{user.username?.slice(0, 1).toUpperCase()} <span>Workspace</span></button><button className="login-link" onClick={handleLogout}>Sign out</button></> : <button className="login-link" onClick={() => navigate("/login")}>Login</button>}<button className="nav-cta" onClick={go}>Get Started Free</button></div></header>
     <main>
       <section className="marketing-hero"><motion.div initial={{ opacity:0, y:14 }} animate={{ opacity:1, y:0 }} transition={{ duration:.55 }}><p className="gemini-badge">Powered by Google Gemini</p><h1>Prepare smarter.<br /><span>Crack your next interview.</span></h1><p>PrepAI analyzes your resume, target role and goals to create a personalized interview preparation plan.</p><div className="hero-buttons"><button className="nav-cta" onClick={go}>Get Started Free <WandSparkles size={15} /></button><a href="#how-it-works" className="watch-button">See How It Works <ArrowRight size={15} /></a></div></motion.div></section>
       <section id="how-it-works" className="how-section"><SectionIntro label="HOW PREPAI WORKS" title="From ambition to a practical plan." /><div className="how-grid">{[["01", "CREATE YOUR ACCOUNT", "Sign up with email to start your personal workspace."], ["02", "TELL US ABOUT YOUR GOAL", "Choose your target role, company, and interview areas."], ["03", "GET YOUR AI PLAN", "Receive a personalized roadmap built around your profile."]].map(([number, title, text]) => <article key={number}><b>{number}</b><h3>{title}</h3><p>{text}</p></article>)}</div><button className="inline-cta" onClick={go}>Build My Preparation Plan <ArrowRight size={16} /></button></section>

@@ -5,6 +5,7 @@ import {
   getAllInterviewReports, 
   generateInterviewReport, 
   getInterviewReportById, 
+  updateRoadmapTask,
   generateResumePdf 
 } from "../services/interview.api";
 
@@ -63,6 +64,14 @@ export const useInterview = () => {
     }
   };
 
+  const toggleRoadmapTask = async ({ interviewId, dayIndex, taskIndex, completed }) => {
+    const response = await updateRoadmapTask({ interviewId, dayIndex, taskIndex, completed });
+    const updatedReport = response?.interviewReport || response;
+    setReport(updatedReport);
+    setReports((currentReports) => currentReports.map((item) => item._id === updatedReport._id ? updatedReport : item));
+    return updatedReport;
+  };
+
   const getResumePdf = async (interviewReportId) => {
     setLoading(true);
     try {
@@ -97,6 +106,7 @@ export const useInterview = () => {
     generateReport, 
     getReportById, 
     getReports, 
+    toggleRoadmapTask,
     getResumePdf 
   };
 };
