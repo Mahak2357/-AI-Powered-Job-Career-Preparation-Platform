@@ -6,7 +6,7 @@ const app = express();
 
 // 1. CORS Setup (Vite / React frontend ke sath cookies allow karne ke liye)
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000'],
+    origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000', 'https://ai-powered-job-career-prep-git-13fb7e-mahak09822-4642s-projects.vercel.app/'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
