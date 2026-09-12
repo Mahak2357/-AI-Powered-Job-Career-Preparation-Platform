@@ -20,7 +20,7 @@ const interviewReportSchema = new mongoose.Schema({
     skillGaps: [{ skill: String, severity: String }],
     technicalQuestions: [questionSchema],
     behavioralQuestions: [questionSchema],
-    preparationPlan: [{ day: Number, focus: String, tasks: [String] }],
+    preparationPlan: [{ day: Number, focus: String, tasks: [mongoose.Schema.Types.Mixed], notes: [String], tips: [String] }],
 }, { timestamps: true });
 
 module.exports = mongoose.model('InterviewReport', interviewReportSchema);

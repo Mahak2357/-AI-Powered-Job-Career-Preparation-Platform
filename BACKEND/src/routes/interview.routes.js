@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const multer = require('multer');
 const { authenticateToken } = require('../middlewares/auth.middleware');
-const { createInterviewReport, getInterviewReports, getInterviewReport } = require('../controllers/interview.controllers');
+const { createInterviewReport, getInterviewReports, getInterviewReport, updateTaskCompletion } = require('../controllers/interview.controllers');
 
 const upload = multer({
     storage: multer.memoryStorage(),
@@ -16,5 +16,6 @@ const interviewRouter = Router();
 interviewRouter.post('/', authenticateToken, upload.single('resume'), createInterviewReport);
 interviewRouter.get('/', authenticateToken, getInterviewReports);
 interviewRouter.get('/report/:interviewId', authenticateToken, getInterviewReport);
+interviewRouter.patch('/report/:interviewId/tasks/:dayIndex/:taskIndex', authenticateToken, updateTaskCompletion);
 
 module.exports = interviewRouter;
