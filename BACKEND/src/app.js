@@ -41,8 +41,14 @@ try {
 // 4. Global Error Handler
 app.use((err, req, res, next) => {
     console.error('Unhandled Error:', err);
-    res.status(err.status || 500).json({
-        message: err.message || 'Internal Server Error'
+    const status = err.status || (err.code === 'LIMIT_FILE_SIZE' ? 400 : 500);
+    const message = err.code === 'LIMIT_FILE_SIZE'
+        ? 'Resume files must be 5 MB or smaller.'
+        : status >= 500
+            ? 'The request could not be completed. Please try again.'
+            : err.message;
+    res.status(status).json({
+        message
     });
 });
 

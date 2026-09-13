@@ -8,7 +8,12 @@ const upload = multer({
     limits: { fileSize: 5 * 1024 * 1024 },
     fileFilter: (req, file, callback) => {
         const acceptedTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-        callback(null, acceptedTypes.includes(file.mimetype));
+        if (!acceptedTypes.includes(file.mimetype)) {
+            const error = new Error('Only PDF and DOCX resumes are supported.');
+            error.status = 400;
+            return callback(error);
+        }
+        return callback(null, true);
     },
 });
 const interviewRouter = Router();
