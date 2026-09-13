@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { InterviewContext } from "../interview.context";
 import { 
@@ -34,7 +34,7 @@ export const useInterview = () => {
     }
   };
 
-  const getReportById = async (id) => {
+  const getReportById = useCallback(async (id) => {
     setLoading(true);
     try {
       const response = await getInterviewReportById(id);
@@ -47,9 +47,9 @@ export const useInterview = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [setLoading, setReport]);
 
-  const getReports = async () => {
+  const getReports = useCallback(async () => {
     setLoading(true);
     try {
       const response = await getAllInterviewReports();
@@ -62,7 +62,7 @@ export const useInterview = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [setLoading, setReports]);
 
   const toggleRoadmapTask = async ({ interviewId, dayIndex, taskIndex, completed }) => {
     const response = await updateRoadmapTask({ interviewId, dayIndex, taskIndex, completed });
@@ -97,7 +97,7 @@ export const useInterview = () => {
     if (interviewId) {
       getReportById(interviewId);
     }
-  }, [interviewId]);
+  }, [interviewId, getReportById]);
 
   return { 
     loading, 

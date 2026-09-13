@@ -1,27 +1,22 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState } from "react";
 
 export const AuthContext = createContext();
 
+const getStoredUser = () => {
+  const storedUser = localStorage.getItem("user");
+  if (!localStorage.getItem("token") || !storedUser) return null;
+  try {
+    return JSON.parse(storedUser);
+  } catch {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    return null;
+  }
+};
+
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Check if user session exists in storage
-    const storedUser = localStorage.getItem("user");
-    const token = localStorage.getItem("token");
-
-    if (token && storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (err) {
-        console.error("Session parse failed:", err);
-        localStorage.removeItem("user");
-        localStorage.removeItem("token");
-      }
-    }
-    setLoading(false);
-  }, []);
+  const [user, setUser] = useState(getStoredUser);
+  const [loading, setLoading] = useState(false);
 
   const logout = () => {
     localStorage.removeItem("token");

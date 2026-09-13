@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { Check, Copy, Play } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../style/interview.scss';
 import { useInterview } from '../hooks/useInterview.js';
@@ -22,8 +23,19 @@ const NAV_ITEMS = [
 ];
 
 // Sub-components
-const QuestionCard = ({ item, index }) => {
+const QuestionCard = ({ item, index, onPractice }) => {
   const [open, setOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const copyAnswer = async () => {
+    try {
+      await navigator.clipboard.writeText(`${item?.question || ''}\n\n${item?.answer || ''}`.trim());
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1600);
+    } catch {
+      setCopied(false);
+    }
+  };
   return (
     <div className={`q-card ${open ? 'q-card--expanded' : ''}`}>
       <div className="q-card__header" onClick={() => setOpen(prev => !prev)}>
@@ -45,6 +57,7 @@ const QuestionCard = ({ item, index }) => {
             <div className="q-card__section">
               <span className="q-card__tag q-card__tag--answer">Strategic Model Answer</span>
               <p>{item.answer}</p>
+              <div className="q-card__actions"><button type="button" onClick={copyAnswer}>{copied ? <Check size={14} /> : <Copy size={14} />}{copied ? 'Copied' : 'Copy answer'}</button>{onPractice && <button type="button" onClick={onPractice}><Play size={14} /> Practice this</button>}</div>
             </div>
           )}
         </div>
@@ -88,14 +101,14 @@ const Interview = () => {
     if (interviewId) {
       getReportById(interviewId);
     }
-  }, [interviewId]);
+  }, [interviewId, getReportById]);
 
   const handleDownload = async () => {
     if (!interviewId) return;
     setDownloading(true);
     try {
       await getResumePdf(interviewId);
-    } catch (err) {
+    } catch {
       alert("PDF download failed. Backend Puppeteer service may be initializing.");
     } finally {
       setDownloading(false);
@@ -178,7 +191,7 @@ const Interview = () => {
               <div className="q-list">
                 {technicalQuestions.length > 0 ? (
                   technicalQuestions.map((q, i) => (
-                    <QuestionCard key={i} item={q} index={i} />
+                    <QuestionCard key={i} item={q} index={i} onPractice={() => navigate(`/roadmap/${interviewId}`)} />
                   ))
                 ) : (
                   <p className="empty-notice">No technical questions synthesized for this plan.</p>
@@ -196,7 +209,7 @@ const Interview = () => {
               <div className="q-list">
                 {behavioralQuestions.length > 0 ? (
                   behavioralQuestions.map((q, i) => (
-                    <QuestionCard key={i} item={q} index={i} />
+                    <QuestionCard key={i} item={q} index={i} onPractice={() => navigate(`/roadmap/${interviewId}`)} />
                   ))
                 ) : (
                   <p className="empty-notice">No behavioral scenarios synthesized for this plan.</p>

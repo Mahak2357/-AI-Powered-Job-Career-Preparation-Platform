@@ -30,6 +30,10 @@ export default function Onboarding() {
       setError("Please select a PDF or DOCX resume.");
       return;
     }
+    if (file.size > 5 * 1024 * 1024) {
+      setError("Your resume must be 5 MB or smaller.");
+      return;
+    }
     setError("");
     setResume(file);
   };
@@ -50,6 +54,7 @@ export default function Onboarding() {
   const next = () => setStep((current) => Math.min(current + 1, 4));
   const previous = () => setStep((current) => Math.max(current - 1, 0));
   const stepLabels = ["Profile", "Resume", "Goals", "Target", "Plan"];
+  const canGenerate = selectedGoals.length > 0 && target.role.trim() && target.company;
 
   return (
     <main className="prepai-app">
@@ -61,15 +66,15 @@ export default function Onboarding() {
         <motion.section className="onboarding-panel" layout>
           <AnimatePresence mode="wait">
             {loading ? <motion.div key="loading" className="generation-state" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><LoaderCircle className="spinner" size={32} /><p className="eyebrow">GEMINI IS WORKING</p><h2>{stages[Math.min(step, stages.length - 1)]}</h2><p>Creating recommendations from the profile and role you provided.</p></motion.div> : <motion.div key={step} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-              {step === 0 && <><h2>What best describes you?</h2><p className="panel-copy">We'll adapt your roadmap to your current stage.</p><div className="option-grid">{profiles.map((item) => <button key={item} className={`choice-card ${profile === item ? "selected" : ""}`} onClick={() => setProfile(item)}>{profile === item && <Check size={16} />}{item}</button>)}</div></>}
-              {step === 1 && <><h2>Let's understand your experience.</h2><p className="panel-copy">Add a PDF or DOCX to give the analysis more context.</p><button className={`resume-drop ${resume ? "has-file" : ""}`} onClick={() => inputRef.current?.click()} onDragOver={(event) => event.preventDefault()} onDrop={(event) => { event.preventDefault(); selectResume(event.dataTransfer.files[0]); }}><input ref={inputRef} type="file" accept=".pdf,.docx" onChange={(event) => selectResume(event.target.files[0])} hidden />{resume ? <><FileText size={28} /><span>{resume.name}</span><small>{(resume.size / 1024 / 1024).toFixed(1)} MB ready</small><i onClick={(event) => { event.stopPropagation(); setResume(null); }}><X size={16} /></i></> : <><Upload size={28} /><strong>Drop your resume here, or browse files</strong><small>PDF or DOCX, up to 5 MB</small></>}</button><button className="skip-button" onClick={next}>Skip for now</button></>}
-              {step === 2 && <><h2>What do you want to prepare for?</h2><p className="panel-copy">Choose every area that matters for your next opportunity.</p><div className="goal-grid">{goals.map((goal) => <button key={goal} className={`choice-card ${selectedGoals.includes(goal) ? "selected" : ""}`} onClick={() => toggleGoal(goal)}>{selectedGoals.includes(goal) && <Check size={16} />}{goal}</button>)}</div></>}
+              {step === 0 && <><h2>What best describes you?</h2><p className="panel-copy">We'll adapt your roadmap to your current stage.</p><div className="option-grid">{profiles.map((item) => <button key={item} className={`choice-card ${profile === item ? "selected" : ""}`} aria-pressed={profile === item} onClick={() => setProfile(item)}>{profile === item && <Check size={16} />}{item}</button>)}</div></>}
+              {step === 1 && <><h2>Let's understand your experience.</h2><p className="panel-copy">Add a PDF or DOCX to give the analysis more context.</p><button className={`resume-drop ${resume ? "has-file" : ""}`} onClick={() => inputRef.current?.click()} onDragOver={(event) => event.preventDefault()} onDrop={(event) => { event.preventDefault(); selectResume(event.dataTransfer.files[0]); }}><input ref={inputRef} type="file" accept=".pdf,.docx" onChange={(event) => selectResume(event.target.files[0])} hidden />{resume ? <><FileText size={28} /><span>{resume.name}</span><small>{(resume.size / 1024 / 1024).toFixed(1)} MB ready</small><i onClick={(event) => { event.stopPropagation(); setResume(null); }}><X size={16} /></i></> : <><Upload size={28} /><strong>Drop your resume here, or browse files</strong><small>PDF or DOCX, up to 5 MB</small></>}</button>{resume && <div className="resume-ready"><Check size={16} /><div><b>Resume ready for AI analysis</b><span>We'll use it for skill alignment, readiness signals, and targeted practice.</span></div></div>}<button className="skip-button" onClick={next}>Skip for now</button></>}
+              {step === 2 && <><h2>What do you want to prepare for?</h2><p className="panel-copy">Choose every area that matters for your next opportunity.</p><div className="goal-grid">{goals.map((goal) => <button key={goal} className={`choice-card ${selectedGoals.includes(goal) ? "selected" : ""}`} aria-pressed={selectedGoals.includes(goal)} onClick={() => toggleGoal(goal)}>{selectedGoals.includes(goal) && <Check size={16} />}{goal}</button>)}</div></>}
               {step === 3 && <><h2>Set your target.</h2><p className="panel-copy">Your target helps make the roadmap specific.</p><div className="form-grid"><label>Target role<input value={target.role} onChange={(event) => setTarget({ ...target, role: event.target.value })} /></label><label>Target company<select value={target.company} onChange={(event) => setTarget({ ...target, company: event.target.value })}>{companies.map((company) => <option key={company}>{company}</option>)}</select></label><label>Experience<select value={target.experience} onChange={(event) => setTarget({ ...target, experience: event.target.value })}><option>Student</option><option>0-1 years</option><option>1-3 years</option><option>3+ years</option></select></label><label className="wide">Anything specific you want help with?<textarea value={target.notes} onChange={(event) => setTarget({ ...target, notes: event.target.value })} placeholder="Topics, timelines, or interview concerns" /></label></div></>}
               {step === 4 && <><h2>Ready to build your plan?</h2><p className="panel-copy">We'll use this information to personalize your first roadmap.</p><div className="review-grid"><div><small>PROFILE</small><b>{profile}</b></div><div><small>RESUME</small><b>{resume ? resume.name : "Not added yet"}</b></div><div><small>GOALS</small><b>{selectedGoals.join(", ") || "None selected"}</b></div><div><small>TARGET</small><b>{target.role} at {target.company}</b></div></div></>}
             </motion.div>}
           </AnimatePresence>
           {error && <p className="form-error">{error}</p>}
-          {!loading && <div className="wizard-actions">{step > 0 ? <button className="secondary-action" onClick={previous}><ArrowLeft size={16} /> Back</button> : <span />}{step === 4 ? <button className="primary-action" onClick={generatePlan}>Generate My AI Preparation Plan <span>✦</span></button> : <button className="primary-action" onClick={next}>Continue <ArrowRight size={16} /></button>}</div>}
+          {!loading && <div className="wizard-actions">{step > 0 ? <button className="secondary-action" onClick={previous}><ArrowLeft size={16} /> Back</button> : <span />}{step === 4 ? <button className="primary-action" disabled={!canGenerate} onClick={generatePlan}>Generate My AI Preparation Plan <span>✦</span></button> : <button className="primary-action" onClick={next}>Continue <ArrowRight size={16} /></button>}</div>}
         </motion.section>
       </section>
     </main>

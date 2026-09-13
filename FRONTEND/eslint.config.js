@@ -8,6 +8,10 @@ export default defineConfig([
   globalIgnores(['dist']),
   {
     files: ['**/*.{js,jsx}'],
+    rules: {
+      'no-unused-vars': ['error', { varsIgnorePattern: '^React$' }],
+      'react-refresh/only-export-components': 'off',
+    },
     extends: [
       js.configs.recommended,
       reactHooks.configs.flat.recommended,

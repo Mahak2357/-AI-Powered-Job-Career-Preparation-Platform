@@ -41,7 +41,7 @@ export const generateInterviewReport = async ({ jobDescription, selfDescription,
     return response.data;
   } catch (error) {
     const message = error.response?.data?.message || "Could not generate your preparation plan. Please try again.";
-    throw new Error(message);
+    throw new Error(message, { cause: error });
   }
 };
 
