@@ -1,3 +1,6 @@
+<img width="1917" height="708" alt="image" src="https://github.com/user-attachments/assets/9fa0e30d-6b5f-46b2-bb46-fa445c765682" />
+
+
 # PrepAI — AI-Powered Job & Career Preparation Platform
 
 PrepAI is a full-stack AI-powered career preparation platform designed to help students and software engineers prepare smarter for their target roles.
@@ -29,6 +32,8 @@ It analyzes candidate profiles and resumes, identifies relevant skills and skill
 
 <img width="1912" height="908" alt="image" src="https://github.com/user-attachments/assets/0205eefe-4614-4552-999d-e70efb2f2ceb" />
 <img width="1917" height="906" alt="image" src="https://github.com/user-attachments/assets/d6b24bab-1530-4d22-9e3a-9459b89e716c" />
+<img width="1907" height="917" alt="image" src="https://github.com/user-attachments/assets/92e6cffa-a15e-453b-8958-bcdff960783c" />
+
 
 
 
