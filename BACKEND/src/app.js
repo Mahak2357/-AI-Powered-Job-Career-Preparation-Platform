@@ -8,10 +8,13 @@ const allowedOrigins = new Set([
     'http://localhost:5173',
     'http://localhost:5174',
 ].filter(Boolean));
+const prepAiVercelOrigin = /^https:\/\/ai-powered-job-career-preparation(?:-[a-z0-9-]+)?\.vercel\.app$/i;
 
 app.use(cors({
     origin(origin, callback) {
-        if (!origin || allowedOrigins.has(origin)) return callback(null, true);
+        if (!origin || allowedOrigins.has(origin) || prepAiVercelOrigin.test(origin)) {
+            return callback(null, true);
+        }
         return callback(new Error('Origin is not allowed by CORS.'));
     },
     credentials: true,
@@ -38,9 +41,8 @@ try {
 // 4. Global Error Handler
 app.use((err, req, res, next) => {
     console.error('Unhandled Error:', err);
-    const status = err.status || 500;
-    res.status(status).json({
-        message: status >= 500 ? 'The request could not be completed. Please try again.' : err.message
+    res.status(err.status || 500).json({
+        message: err.message || 'Internal Server Error'
     });
 });
 
