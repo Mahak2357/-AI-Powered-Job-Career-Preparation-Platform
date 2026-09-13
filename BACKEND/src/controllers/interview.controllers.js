@@ -25,15 +25,31 @@ Return only valid JSON with this exact shape:
 
 Requirements: return 6 technical questions and 4 behavioral questions. Return a 14-day plan with 2 or 3 concise, actionable tasks every day. If the target includes DSA, include concrete DSA topics, patterns, and at least one relevant LeetCode-style problem in every applicable day. Answers must explain the approach, complexity, and common mistakes. Notes should be concise concepts to remember; tips should be practical interview advice. Never use markdown or code fences.`;
 
+    const configuredModel = (process.env.GEMINI_MODEL || 'gemini-3.6-flash').replace(/^models\//, '');
+    const retiredModels = new Set(['gemini-1.5-flash', 'gemini-2.5-flash']);
+    const model = retiredModels.has(configuredModel) ? 'gemini-3.6-flash' : configuredModel;
+    if (configuredModel !== model) {
+        console.warn(`Ignoring retired GEMINI_MODEL=${configuredModel}; using gemini-3.6-flash instead.`);
+    }
+
     const response = await ai.models.generateContent({
-        model: process.env.GEMINI_MODEL || 'gemini-1.5-flash',
+        model,
         contents: prompt,
-        config: { responseMimeType: 'application/json' },
+        config: { responseMimeType: 'application/json', maxOutputTokens: 16384 },
+    }).catch((providerError) => {
+        const error = new Error('AI plan generation is temporarily unavailable. Please try again shortly.');
+        error.status = 502;
+        error.cause = providerError;
+        throw error;
     });
 
+    const responseText = response.text || response.candidates?.[0]?.content?.parts
+        ?.map((part) => part.text)
+        .filter(Boolean)
+        .join('');
     let content;
     try {
-        content = JSON.parse(response.text);
+        content = JSON.parse(responseText);
     } catch (parseError) {
         const error = new Error('Gemini returned an invalid preparation plan. Please try again.');
         error.status = 502;

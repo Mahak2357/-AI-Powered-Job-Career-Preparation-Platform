@@ -1,26 +1,23 @@
 const express = require('express');
+const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
 const app = express();
+const allowedOrigins = new Set([
+    process.env.FRONTEND_URL,
+    'http://localhost:5173',
+    'http://localhost:5174',
+].filter(Boolean));
 
-// 1. Bulletproof CORS headers (handles all domains and OPTIONS preflight)
-app.use((req, res, next) => {
-    const origin = req.headers.origin;
-    if (origin) {
-        res.setHeader('Access-Control-Allow-Origin', origin);
-    } else {
-        res.setHeader('Access-Control-Allow-Origin', '*');
-    }
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
-
-    // Instantly answer browser preflight OPTIONS check
-    if (req.method === 'OPTIONS') {
-        return res.sendStatus(200);
-    }
-    next();
-});
+app.use(cors({
+    origin(origin, callback) {
+        if (!origin || allowedOrigins.has(origin)) return callback(null, true);
+        return callback(new Error('Origin is not allowed by CORS.'));
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 // 2. Body & Cookie Parsers
 app.use(express.json());
@@ -41,8 +38,9 @@ try {
 // 4. Global Error Handler
 app.use((err, req, res, next) => {
     console.error('Unhandled Error:', err);
-    res.status(err.status || 500).json({
-        message: err.message || 'Internal Server Error'
+    const status = err.status || 500;
+    res.status(status).json({
+        message: status >= 500 ? 'The request could not be completed. Please try again.' : err.message
     });
 });
 
