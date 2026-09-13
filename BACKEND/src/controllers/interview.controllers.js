@@ -36,11 +36,6 @@ Requirements: return 6 technical questions and 4 behavioral questions. Return a 
         model,
         contents: prompt,
         config: { responseMimeType: 'application/json', maxOutputTokens: 16384 },
-    }).catch((providerError) => {
-        const error = new Error('AI plan generation is temporarily unavailable. Please try again shortly.');
-        error.status = 502;
-        error.cause = providerError;
-        throw error;
     });
 
     const responseText = response.text || response.candidates?.[0]?.content?.parts
