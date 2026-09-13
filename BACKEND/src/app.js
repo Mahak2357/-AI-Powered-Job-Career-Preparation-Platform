@@ -4,15 +4,23 @@ const cookieParser = require('cookie-parser');
 
 const app = express();
 
-// 1. CORS Setup (Vite / React frontend ke sath cookies allow karne ke liye)
-app.use(cors({
-    origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000', 'https://ai-powered-job-career-prep-git-13fb7e-mahak09822-4642s-projects.vercel.app/'],
+const corsOptions = {
+    origin: [
+        'http://localhost:5173',
+        'http://localhost:5174',
+        'http://localhost:3000',
+        'https://ai-powered-job-career-preparation-p.vercel.app'
+    ],
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
-}));
+};
 
-// 2. Body & Cookie Parsers (Routes se pehle aane zaroori hain)
+// 1. CORS Setup
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Preflight requests ko explicitly handle karne ke liye
+
+// 2. Body & Cookie Parsers
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -21,7 +29,6 @@ app.use(cookieParser());
 const authRouter = require('./routes/auth.routes');
 app.use('/api/auth', authRouter);
 
-// Agar interview routes ki file bani hui hai toh usse bhi yahan load karo:
 try {
     const interviewRouter = require('./routes/interview.routes');
     app.use('/api/interview', interviewRouter);
